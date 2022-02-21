@@ -7,9 +7,10 @@ import {
 	UpdateItemCommandInput, UpdateItemCommand,
 	GetItemCommandInput, GetItemCommand
 } from "@aws-sdk/client-dynamodb";
+import {MEASUREMENTS_TABLE} from "../config/config";
 
 export class MeasurementRepository {
-	private readonly tableName = process.env.MEASUREMENTS_TABLE;
+	private readonly tableName = MEASUREMENTS_TABLE;
 	public constructor(
         private readonly dynamoDb: DynamoDBClient,
 	) {}

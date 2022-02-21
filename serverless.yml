@@ -3,7 +3,7 @@ service: aws-serverless-api
 provider:
   name: aws
   runtime: nodejs14.x
-  region: us-east-1
+  region: ${env:REGION_NAME}
   environment:
     POINTS_TABLE: ${env:POINTS_TABLE}
     MEASUREMENTS_TABLE: ${env:MEASUREMENTS_TABLE}

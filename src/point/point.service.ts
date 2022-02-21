@@ -1,6 +1,7 @@
 import {Point, PointsList} from "./point.interfaces";
 import {PointRepository} from "./point.repository";
 import axios from "axios";
+import {CALCULATIONS_API} from "../config/config";
 
 export class PointService {
 	constructor(private readonly repository: PointRepository) {}
@@ -73,7 +74,7 @@ export class PointService {
 				}
 			]
 
-			const result = await axios.post(`${process.env.CALCULATIONS_API}/distance`, data, {
+			const result = await axios.post(`${CALCULATIONS_API}/distance`, data, {
 				headers: {
 					'Content-Type': 'application/json',
 					"Access-Control-Allow-Origin": "*",
@@ -103,7 +104,7 @@ export class PointService {
 				accuracy: point.accuracy,
 			}));
 
-			const result = await axios.post(`${process.env.CALCULATIONS_API}/distance`, data, {
+			const result = await axios.post(`${CALCULATIONS_API}/distance`, data, {
 				headers: {
 					'Content-Type': 'application/json',
 					"Access-Control-Allow-Origin": "*",
@@ -133,7 +134,7 @@ export class PointService {
 				accuracy: point.accuracy,
 			}));
 
-			const result = await axios.post(`${process.env.CALCULATIONS_API}/area`, data, {
+			const result = await axios.post(`${CALCULATIONS_API}/area`, data, {
 				headers: {
 					'Content-Type': 'application/json',
 					"Access-Control-Allow-Origin": "*",

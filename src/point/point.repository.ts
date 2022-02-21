@@ -16,9 +16,10 @@ import {
 	BatchWriteItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import {v4 as uuid4} from "uuid";
+import {POINTS_TABLE} from "../config/config";
 
 export class PointRepository {
-	private readonly tableName = process.env.POINTS_TABLE;
+	private readonly tableName = POINTS_TABLE;
 	public constructor(
         private readonly dynamoDb: DynamoDBClient,
 	) {}
