@@ -1,0 +1,153 @@
+service: aws-serverless-api
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  environment:
+    POINTS_TABLE: ${env:POINTS_TABLE}
+    MEASUREMENTS_TABLE: ${env:MEASUREMENTS_TABLE}
+    CALCULATIONS_API: ${env:CALCULATIONS_API}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MEASUREMENTS_TABLE}"
+            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.POINTS_TABLE}"
+useDotenv: true
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      noStart: true
+
+functions:
+  create:
+    handler: src/measurement/handler.create
+    events:
+      - http:
+          path: /measurements
+          method: post
+  findAll:
+    handler: src/measurement/handler.findAll
+    events:
+      - http:
+          path: /measurements
+          method: get
+  remove:
+    handler: src/measurement/handler.remove
+    events:
+      - http:
+          path: /measurements/{id}
+          method: delete
+  update:
+    handler: src/measurement/handler.update
+    events:
+      - http:
+          path: /measurements/{id}
+          method: put
+  findOne:
+    handler: src/measurement/handler.findOne
+    events:
+      - http:
+          path: /measurements/{id}
+          method: get
+  createPoint:
+    handler: src/point/handler.create
+    events:
+      - http:
+          path: /measurements/{measurementId}/points
+          method: post
+  findAllPoints:
+    handler: src/point/handler.findAll
+    events:
+      - http:
+          path: /measurements/{measurementId}/points
+          method: get
+  removePoint:
+    handler: src/point/handler.remove
+    events:
+      - http:
+          path: /measurements/points/{pointId}
+          method: delete
+  updatePoint:
+    handler: src/point/handler.update
+    events:
+      - http:
+          path: /measurements/points/{pointId}
+          method: put
+  findOnePoint:
+    handler: src/point/handler.findOne
+    events:
+      - http:
+          path: /measurements/points/{pointId}
+          method: get
+  getPointsDistance:
+    handler: src/point/handler.getPointsDistance
+    events:
+      - http:
+          path: /points/distance
+          method: get
+  getPointsLength:
+    handler: src/point/handler.getPointsLength
+    events:
+      - http:
+          path: /measurements/{measurementId}/points/length
+          method: get
+  getPointsArea:
+    handler: src/point/handler.getPointsArea
+    events:
+      - http:
+          path: /measurements/{measurementId}/points/area
+          method: get
+
+resources:
+  Resources:
+    measurementsTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        TableName: ${env:MEASUREMENTS_TABLE}
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+    pointsTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        TableName: ${env:POINTS_TABLE}
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+  - serverless-plugin-typescript
+  - serverless-jest-plugin
