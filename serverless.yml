@@ -8,6 +8,8 @@ provider:
     POINTS_TABLE: ${env:POINTS_TABLE}
     MEASUREMENTS_TABLE: ${env:MEASUREMENTS_TABLE}
     CALCULATIONS_API: ${env:CALCULATIONS_API}
+  httpApi:
+    cors: true
   iam:
     role:
       statements:
@@ -39,79 +41,79 @@ functions:
   create:
     handler: src/measurement/handler.create
     events:
-      - http:
+      - httpApi:
           path: /measurements
           method: post
   findAll:
     handler: src/measurement/handler.findAll
     events:
-      - http:
+      - httpApi:
           path: /measurements
           method: get
   remove:
     handler: src/measurement/handler.remove
     events:
-      - http:
+      - httpApi:
           path: /measurements/{id}
           method: delete
   update:
     handler: src/measurement/handler.update
     events:
-      - http:
+      - httpApi:
           path: /measurements/{id}
           method: put
   findOne:
     handler: src/measurement/handler.findOne
     events:
-      - http:
+      - httpApi:
           path: /measurements/{id}
           method: get
   createPoint:
     handler: src/point/handler.create
     events:
-      - http:
+      - httpApi:
           path: /measurements/{measurementId}/points
           method: post
   findAllPoints:
     handler: src/point/handler.findAll
     events:
-      - http:
+      - httpApi:
           path: /measurements/{measurementId}/points
           method: get
   removePoint:
     handler: src/point/handler.remove
     events:
-      - http:
+      - httpApi:
           path: /measurements/points/{pointId}
           method: delete
   updatePoint:
     handler: src/point/handler.update
     events:
-      - http:
+      - httpApi:
           path: /measurements/points/{pointId}
           method: put
   findOnePoint:
     handler: src/point/handler.findOne
     events:
-      - http:
+      - httpApi:
           path: /measurements/points/{pointId}
           method: get
   getPointsDistance:
     handler: src/point/handler.getPointsDistance
     events:
-      - http:
+      - httpApi:
           path: /points/distance
           method: get
   getPointsLength:
     handler: src/point/handler.getPointsLength
     events:
-      - http:
+      - httpApi:
           path: /measurements/{measurementId}/points/length
           method: get
   getPointsArea:
     handler: src/point/handler.getPointsArea
     events:
-      - http:
+      - httpApi:
           path: /measurements/{measurementId}/points/area
           method: get
 
